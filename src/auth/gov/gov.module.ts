@@ -1,14 +1,16 @@
 import { Module } from '@nestjs/common';
 import { SoapModule } from 'nestjs-soap';
-import { GovService } from './gov.service';
 import { GovController } from './gov.controller';
+import { GovService } from './gov.service';
 
 @Module({
   imports: [
-    // Register the SOAP client with the WSDL URL
     SoapModule.register({
-      clientName: 'MY_SOAP_CLIENT',
+      clientName: 'BIG_REGISTER',
       uri: 'https://api.bigregister.nl/zksrv/soap/4?wsdl',
+    /*  clientOptions: {
+        forceSoap11: true,
+      },*/
     }),
   ],
   controllers: [GovController],
