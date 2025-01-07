@@ -27,7 +27,7 @@ jobs:
 
       - name: Zip artifact for deployment
         run: |
-          cd care_manager-api/dist  # Ensure you're in the dist folder for zipping
+          cd ${GITHUB_WORKSPACE}/dist  # Ensure you're in the dist folder for zipping
           zip -r ${GITHUB_WORKSPACE}/data-api-release.zip ./*
 
       - name: Upload data-api artifact for deployment job
@@ -64,4 +64,4 @@ jobs:
           app-name: 'care-manager-api'  # Your Azure app name
           slot-name: 'Production'
           publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}  # Secret containing the publish profile
-          package: ./care_manager-api/dist  # Use the 'dist' folder for deployment
+          package: ${GITHUB_WORKSPACE}/dist  # Use the 'dist' folder for deployment
