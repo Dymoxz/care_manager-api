@@ -26,6 +26,7 @@ jobs:
 
       - name: Zip artifact for deployment
         run: |
+          npm prune --production # Remove unnecessary dependencies for production
           zip -r data-api-release.zip dist/* # zip everything inside the dist directory
           pwd # debugging
           ls -l # debugging
@@ -58,7 +59,7 @@ jobs:
           ls -l # List again to check unzipped content
       - name: Install dependencies
         run: |
-          npm install
+          npm install --omit=dev
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
