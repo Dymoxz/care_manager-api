@@ -14,39 +14,44 @@ export class PatientController {
     }
 
     @Post()
-    async createPatient(@Body() createPatientDto: CreatePatientDto): Promise<Patient> {
-        console.log('Create a patient');
-        return this.patientService.createPatient(createPatientDto);
+    async createPatient(@Body() body: { createPatientDto: any; roomNumber: number }): Promise<Patient> {
+        console.log('Create a patient with room assignment');
+        return this.patientService.createPatient(body);
     }
 
-    @Get(':bsn')
-    async getPatient(@Param() bsn: string): Promise<Patient> {
+    @Get(':patientNumber')
+    async getPatient(@Param('patientNumber') patientNumber: string): Promise<Patient> {
         console.log('Get a patient');
-        return this.patientService.getPatient(bsn);
+        return this.patientService.getPatient(patientNumber);
     }
 
-    @Put(':bsn')
-    async updatePatient(@Param() bsn: string, @Body() updatePatientDto: UpdatePatientDto): Promise<Patient> {
+    @Put(':patientNumber')
+    async updatePatient(@Param('patientNumber') patientNumber: string, @Body() updatePatientDto: UpdatePatientDto): Promise<Patient> {
         console.log('Update a patient');
-        return this.patientService.updatePatient(bsn, updatePatientDto);
+        return this.patientService.updatePatient(patientNumber, updatePatientDto);
     }
 
     @Put('/caretTaker/:careTakerBig')
-    async assignCaretTaker(@Param() careTakerBig: string, @Body() patientBsnList: string[]): Promise<any[]> {
+    async assignCaretTaker(@Param('careTakerBig') careTakerBig: string, @Body() patientNumberList: string[]): Promise<any[]> {
         console.log('Assign a caretaker');
-        return this.patientService.assignCareTaker(patientBsnList, careTakerBig);
+        return this.patientService.assignCareTaker(patientNumberList, careTakerBig);
     }
 
     @Get('/caretTaker/:caretakerBig')
-    async getPatientByCaretaker(@Param() caretakerBig: string): Promise<Patient[]> {
-        console.log('Get all patients');
+    async getPatientByCaretaker(@Param('caretakerBig') caretakerBig: string): Promise<Patient[]> {
+        console.log('Get all patients by caretaker');
         return this.patientService.getPatientByCaretaker(caretakerBig);
     }
 
-    @Delete(':bsn')
-    async deletePatient(@Param() bsn: string): Promise<Patient> {
+    @Delete(':patientNumber')
+    async deletePatient(@Param('patientNumber') patientNumber: string): Promise<Patient> {
         console.log('Delete a patient');
-        return this.patientService.deletePatient(bsn);
+        return this.patientService.deletePatient(patientNumber);
     }
 
+    @Get('/room/:roomNumber')
+    async getPatientByRoom(@Param('roomNumber') roomNumber: string): Promise<Patient> {
+        console.log('Get a patient by room');
+        return this.patientService.getPatientByRoom(roomNumber);
+    }
 }
