@@ -1,43 +1,65 @@
-name: CI/CD - Deploy to Azure Web App
+name: Build and deploy backend app to Azure
 
 on:
   push:
     branches:
-      - production # Triggered on pushes to the production branch
+      - release
+  workflow_dispatch:
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-    env:
-      AZURE_WEBAPP_NAME: 'care-manager-api'
-      AZURE_RESOURCE_GROUP: 'care_manager'
-
+    name: Build and zip backend app
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js version
+        uses: actions/setup-node@v4
         with:
           node-version: '18.x'
-          cache: 'npm'
+
+      - name: npm install, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          # npm run test --if-present
+
+      - name: Zip artifact for deployment
+        run: |
+          echo ${GITHUB_WORKSPACE}
+          cd ${GITHUB_WORKSPACE}/dist/src/
+          zip -r ${GITHUB_WORKSPACE}/data-api-release.zip ./*
+
+      - name: Upload data-api artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: data-api
+          path: ${GITHUB_WORKSPACE}/data-api-release.zip
+
+  deploy-data-api:
+    runs-on: ubuntu-latest
+    name: Deploy NestJs backend
+    needs: build
+    environment:
+      name: 'Production'
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: data-api
+
+      - name: Unzip artifact for deployment
+        run: unzip data-api-release.zip
 
       - name: Install dependencies
         run: npm install
 
-      - name: Build NestJS app
-        run: npm run build
-
-      - name: Zip Artifacts
-        run: |
-          cd dist
-          zip -r ../release.zip *
-
-      - name: Deploy to Azure Web App
-        uses: azure/webapps-deploy@v2
+      - name: 'Deploy to Azure Web App'
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
         with:
           app-name: 'care-manager-api'
           slot-name: 'Production'
-          package: release.zip
           publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}
-
+          package: .
