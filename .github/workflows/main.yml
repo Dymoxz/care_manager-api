@@ -3,7 +3,7 @@ name: Build and deploy backend app to Azure
 on:
     push:
         branches:
-            - release
+            - production
     workflow_dispatch:
 
 jobs:
