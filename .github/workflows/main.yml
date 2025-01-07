@@ -20,14 +20,15 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          cd ${GITHUB_WORKSPACE}/care-manager-api  # Ensure we're in the root of the backend project
+          pwd
+           # Ensure we're in the root of the backend project
           npm install
           npm run build --if-present
           # npm run test --if-present
 
       - name: Zip artifact for deployment
         run: |
-          cd ${GITHUB_WORKSPACE}/care-manager-api/dist  # Ensure you're in the dist folder for zipping
+          pwd
           zip ${GITHUB_WORKSPACE}/data-api-release.zip ./* -r
 
       - name: Upload data-api artifact for deployment job
@@ -54,7 +55,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd ${GITHUB_WORKSPACE}/care-manager-api  # Ensure we're in the correct directory for npm install
+          pwd  # Ensure we're in the correct directory for npm install
           npm install
 
       - name: 'Deploy to Azure Web App'
