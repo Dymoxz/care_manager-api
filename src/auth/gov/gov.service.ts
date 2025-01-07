@@ -13,6 +13,7 @@ export class GovService {
     //this.logger.debug(this.client.getHttpHeaders());
     //Logging the client services
     //this.logger.debug("client services: " + JSON.stringify(this.client.describe(), null, 2));
+    //_xml: is to replace the whoel xml body
     return this.client.ListHcpApprox4Async({
       _xml:`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ext="http://services.cibg.nl/ExternalUser">
               <soapenv:Body>
@@ -36,7 +37,7 @@ export class GovService {
         //this.logger.debug("Dit moet het object zijn: " , result);
         return result;
       }
-      this.logger.error('Geen resultaat gevonden');
+      //this.logger.error('Geen resultaat gevonden');
       return 'Niets gevonden';
     });
   }

@@ -9,7 +9,7 @@ export class GovController {
   @Post('hcp')
   async getHcp(@Query('registrationNumber') registrationNumber: string) {
     //console.log('Get number ' + registrationNumber);
-    this.logger.debug("Dit is de controller: ", await this.govService.validateBigNumber(registrationNumber));
-    //return await this.govService.validateBigNumber(registrationNumber);
+    //this.logger.debug("Dit is de controller: ", await this.govService.validateBigNumber(registrationNumber));
+    return await this.govService.validateBigNumber(registrationNumber);
   }
 }
