@@ -27,7 +27,7 @@ jobs:
       - name: Zip artifact for deployment
         run: |
           echo ${GITHUB_WORKSPACE}
-          cd ${GITHUB_WORKSPACE}/dist/src/
+          cd ${GITHUB_WORKSPACE}/dist/src
           zip -r ${GITHUB_WORKSPACE}/data-api-release.zip ./*
 
       - name: Upload data-api artifact for deployment job
