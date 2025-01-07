@@ -36,7 +36,6 @@ jobs:
       - name: Deploy to Azure Web App
         uses: azure/webapps-deploy@v2
         with:
-          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          app-name: ${{ care-manager-api }}
           package: release.zip
           publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}
-          resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
