@@ -1,70 +1,42 @@
-name: Build and deploy backend app to Azure
+name: CI/CD - Deploy to Azure Web App
 
 on:
   push:
     branches:
-      - production
-  workflow_dispatch:
+      - production # Triggered on pushes to the production branch
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    name: Build and zip backend app
-    steps:
-      - uses: actions/checkout@v4
+    env:
+      AZURE_WEBAPP_NAME: 'care-manager-api'
+      AZURE_RESOURCE_GROUP: 'care_manager'
 
-      - name: Set up Node.js version
-        uses: actions/setup-node@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: '18.x'
+          cache: 'npm'
 
-      - name: Install dependencies and build
-        run: |
-          npm install
-          npm run build --if-present
-          # npm run test --if-present
-
-      - name: Zip artifact for deployment
-        run: |
-          npm prune --production # Remove unnecessary dependencies for production
-          zip -r data-api-release.zip dist/* # zip everything inside the dist directory
-          pwd # debugging
-          ls -l # debugging
-      - name: Check if the zip file exists
-        run: |
-          ls -l data-api-release.zip # Verify the zip file exists
-
-      - name: Upload data-api artifact for deployment job
-        uses: actions/upload-artifact@v4
-        with:
-          name: data-api
-          path: data-api-release.zip # Correct path
-  deploy-data-api:
-    runs-on: ubuntu-latest
-    name: Deploy NestJs backend
-    needs: build
-    environment:
-      name: 'Production'
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: data-api
-
-      - name: Unzip artifact for deployment
-        run: |
-          ls -l # List to see downloaded artifact
-          unzip data-api-release.zip # Use the correct name
-          ls -l # List again to check unzipped content
       - name: Install dependencies
+        run: npm ci
+
+      - name: Build NestJS app
+        run: npm run build
+
+      - name: Zip Artifacts
         run: |
-          npm install --omit=dev
-      - name: 'Deploy to Azure Web App'
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v3
+          cd dist
+          zip -r ../release.zip *
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v2
         with:
-          app-name: 'care-manager-api'
-          slot-name: 'Production'
+          app-name: ${{ env.AZURE_WEBAPP_NAME }}
+          package: release.zip
           publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}
-          package: . # Deploy the current directory
+          resource-group: ${{ env.AZURE_RESOURCE_GROUP }}
