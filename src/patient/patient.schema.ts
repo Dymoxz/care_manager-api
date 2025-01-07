@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { Room } from '../room/room.schema';
 
 export type PatientDocument = HydratedDocument<Patient>;
 
@@ -31,6 +32,12 @@ export class Patient {
 
     @Prop()
     diet: string;
+
+    @Prop()
+    careTaker: string;
+
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Room' })
+    room: Room;
 
 }
 
