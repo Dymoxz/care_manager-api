@@ -58,7 +58,7 @@ jobs:
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
-          app-name: 'YOUR_AZURE_APP_NAME'
+          app-name: 'care-manager-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.NESTJS_PUBLISHPROFILE }}
+          publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}
           package: .
