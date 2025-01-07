@@ -36,6 +36,10 @@ jobs:
           name: data-api
           path: ${GITHUB_WORKSPACE}/dist/data-api-release.zip
 
+      - name: Check if the zip file exists
+        run: |
+          ls -l ${GITHUB_WORKSPACE}/dist/data-api-release.zip  # Check if the zip file exists
+
   deploy-data-api:
     runs-on: ubuntu-latest
     name: Deploy NestJs backend
