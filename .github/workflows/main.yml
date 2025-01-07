@@ -20,26 +20,25 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          cd ${GITHUB_WORKSPACE}  # Ensure we're in the root of the backend project
           npm install
           npm run build --if-present
           # npm run test --if-present
 
       - name: Zip artifact for deployment
         run: |
-          cd ${GITHUB_WORKSPACE}/dist  # Ensure you're in the dist folder for zipping
-          zip -r data-api-release.zip ./*
-
+          cd dist # Navigate to the dist directory
+          zip -r data-api-release.zip ./* # zip everything in current directory
+          pwd # debugging
+          ls -l # debugging
       - name: Check if the zip file exists
         run: |
-          ls -l ${GITHUB_WORKSPACE}/dist/data-api-release.zip  # Check if the zip file exists
+          ls -l dist/data-api-release.zip # Verify the zip file
 
       - name: Upload data-api artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: data-api
-          path: ${GITHUB_WORKSPACE}/dist/data-api-release.zip  # Correct path
-
+          path: dist/data-api-release.zip # Correct path
   deploy-data-api:
     runs-on: ubuntu-latest
     name: Deploy NestJs backend
@@ -55,14 +54,13 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: |
-          ls -l  # List contents of the current directory for debugging
-          unzip data-api-release.zip
+          unzip data-api.zip
+          ls -l
 
       - name: Install dependencies
         run: |
-          cd care_manager-api  # Ensure we're in the correct directory for npm install
+          cd dist # Navigate to the unzipped directory
           npm install
-
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
@@ -70,4 +68,4 @@ jobs:
           app-name: 'care-manager-api'  # Your Azure app name
           slot-name: 'Production'
           publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}  # Secret containing the publish profile
-          package: ${GITHUB_WORKSPACE}/dist  # Use the 'dist' folder for deployment
+          package: dist # Deploy the dist folder
