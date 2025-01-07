@@ -28,7 +28,7 @@ jobs:
       - name: Zip artifact for deployment
         run: |
           cd ${GITHUB_WORKSPACE}/dist  # Ensure you're in the dist folder for zipping
-          zip -r ${GITHUB_WORKSPACE}/data-api-release.zip ./*
+          zip -r data-api-release.zip ./*
 
       - name: Check if the zip file exists
         run: |
