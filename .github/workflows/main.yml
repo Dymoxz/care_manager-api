@@ -20,15 +20,14 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          pwd
-           # Ensure we're in the root of the backend project
+          cd care-manager-api  # Ensure we're in the root of the backend project
           npm install
           npm run build --if-present
           # npm run test --if-present
 
       - name: Zip artifact for deployment
         run: |
-          pwd
+          cd care-manager-api/dist  # Ensure you're in the dist folder for zipping
           zip ${GITHUB_WORKSPACE}/data-api-release.zip ./* -r
 
       - name: Upload data-api artifact for deployment job
@@ -55,7 +54,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pwd  # Ensure we're in the correct directory for npm install
+          cd care-manager-api  # Ensure we're in the correct directory for npm install
           npm install
 
       - name: 'Deploy to Azure Web App'
@@ -65,4 +64,4 @@ jobs:
           app-name: 'care-manager-api'  # Your Azure app name
           slot-name: 'Production'
           publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}  # Secret containing the publish profile
-          package: ${GITHUB_WORKSPACE}/care-manager-api  # Path to your backend project for deployment
+          package: ./care-manager-api  # Use relative path for deployment package
