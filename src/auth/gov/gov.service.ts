@@ -5,44 +5,39 @@ import { Client } from 'nestjs-soap';
 export class GovService {
   private readonly logger = new Logger(GovService.name);
 
-  constructor(@Inject('BIG_REGISTER') private readonly soapClient: Client) {}
+  constructor(@Inject('BIG_REGISTER') private readonly client: Client) {}
 
-  async listHcpApprox(registrationNumber: string) {
-    try {
-      const soapRequest = this.generateSoapRequest(registrationNumber);
-
-      this.logger.debug('SOAP request XML:', soapRequest);
-
-      return await new Promise((resolve, reject) => {
-        this.soapClient.ListHcpApprox4(soapRequest, (err, res) => {
-          if (err) {
-            console.log(err);
-            this.logger.error('SOAP error:', err.message || 'Unknown error');
-            reject(new Error(err.message || 'SOAP request failed'));
-          } else {
-            this.logger.debug('SOAP response received:', res);
-            resolve(res);
-          }
-        });
-      });
-    } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : 'Unknown error';
-      this.logger.error(`SOAP request failed: ${errorMessage}`);
-      throw new Error(errorMessage);
-    }
-  }
-
-  private generateSoapRequest(registrationNumber: string): string {
-    return `
-    <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ext="http://services.cibg.nl/ExternalUser">
-      <soapenv:Header/>
-      <soapenv:Body>
-        <ext:ListHcpApproxRequest>
-          <ext:RegistrationNumber>${registrationNumber}</ext:RegistrationNumber>
-        </ext:ListHcpApproxRequest>
-      </soapenv:Body>
-    </soapenv:Envelope>
-  `;
+  async validateBigNumber(registrationNumber: string): Promise<any> {
+    this.logger.log('Validating number ' + registrationNumber);
+    this.client.setSOAPAction('http://services.cibg.nl/ExternalUser/ListHcpApprox4');
+    //this.logger.debug(this.client.getHttpHeaders());
+    //Logging the client services
+    //this.logger.debug("client services: " + JSON.stringify(this.client.describe(), null, 2));
+    return this.client.ListHcpApprox4Async({
+      _xml:`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ext="http://services.cibg.nl/ExternalUser">
+              <soapenv:Body>
+                  <ext:listHcpApproxRequest>
+                    <ext:RegistrationNumber>${registrationNumber}</ext:RegistrationNumber>
+                  </ext:listHcpApproxRequest>
+              </soapenv:Body>
+            </soapenv:Envelope> `
+    }).then((response) => {
+      //this.logger.debug(response[0]);
+      
+      if(response[0].ListHcpApprox != null)
+      {
+        //this.logger.debug(response[0].ListHcpApprox.ListHcpApprox4[0]);
+        const result = {
+          BirthSurname: response[0].ListHcpApprox.ListHcpApprox4[0].BirthSurname,
+          Initial: response[0].ListHcpApprox.ListHcpApprox4[0].Initial,
+          Big_Number: registrationNumber
+        };
+        
+        //this.logger.debug("Dit moet het object zijn: " , result);
+        return result;
+      }
+      this.logger.error('Geen resultaat gevonden');
+      return 'Niets gevonden';
+    });
   }
 }

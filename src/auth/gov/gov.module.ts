@@ -8,9 +8,6 @@ import { GovService } from './gov.service';
     SoapModule.register({
       clientName: 'BIG_REGISTER',
       uri: 'https://api.bigregister.nl/zksrv/soap/4?wsdl',
-   /*   clientOptions: {
-        forceSoap11: true,
-      },*/
     }),
   ],
   controllers: [GovController],
