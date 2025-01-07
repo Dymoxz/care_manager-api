@@ -59,7 +59,7 @@ jobs:
           ls -l # List again to check unzipped content
       - name: Install dependencies
         run: |
-          cd dist # Navigate to the unzipped directory
+          cd ${GITHUB_WORKSPACE}/dist # Navigate to the unzipped directory
           npm install
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
