@@ -30,15 +30,15 @@ jobs:
           cd ${GITHUB_WORKSPACE}/dist  # Ensure you're in the dist folder for zipping
           zip -r data-api-release.zip ./*
 
+      - name: Check if the zip file exists
+        run: |
+          ls -l ${GITHUB_WORKSPACE}/dist/data-api-release.zip  # Check if the zip file exists
+
       - name: Upload data-api artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: data-api
-          path: ${GITHUB_WORKSPACE}/dist/data-api-release.zip
-
-      - name: Check if the zip file exists
-        run: |
-          ls -l ${GITHUB_WORKSPACE}/dist/data-api-release.zip  # Check if the zip file exists
+          path: ${GITHUB_WORKSPACE}/dist/data-api-release.zip  # Correct path
 
   deploy-data-api:
     runs-on: ubuntu-latest
@@ -54,7 +54,9 @@ jobs:
           name: data-api
 
       - name: Unzip artifact for deployment
-        run: unzip data-api-release.zip
+        run: |
+          ls -l  # List contents of the current directory for debugging
+          unzip data-api-release.zip
 
       - name: Install dependencies
         run: |
