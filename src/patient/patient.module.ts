@@ -7,7 +7,7 @@ import { RoomModule } from '../room/room.module';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{name: 'Patient', schema: PatientSchema}]), RoomModule,
+        MongooseModule.forFeature([{name: 'Patient', schema: PatientSchema, collection: 'patients'}]), RoomModule,
 
     ],
     controllers: [PatientController],

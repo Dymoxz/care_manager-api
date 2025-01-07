@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{ name: 'CareTaker', schema: CareTakerSchema }]),
+    MongooseModule.forFeature([{ name: 'CareTaker', schema: CareTakerSchema, collection: 'careTakers' }]),
   ],
   controllers: [AuthController],
   providers: [AuthService],
