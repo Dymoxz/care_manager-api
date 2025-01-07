@@ -26,19 +26,18 @@ jobs:
 
       - name: Zip artifact for deployment
         run: |
-          cd dist
-          zip -r data-api-release.zip ./*
-          pwd
-          ls -l
+          zip -r data-api-release.zip dist/* # zip everything inside the dist directory
+          pwd # debugging
+          ls -l # debugging
       - name: Check if the zip file exists
         run: |
-          ls -l dist/data-api-release.zip
+          ls -l data-api-release.zip # Verify the zip file exists
 
       - name: Upload data-api artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: data-api
-          path: dist/data-api-release.zip
+          path: data-api-release.zip # Correct path
   deploy-data-api:
     runs-on: ubuntu-latest
     name: Deploy NestJs backend
@@ -59,7 +58,6 @@ jobs:
           ls -l # List again to check unzipped content
       - name: Install dependencies
         run: |
-          cd care_manager-api/dist # Navigate to the unzipped directory
           npm install
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -68,4 +66,4 @@ jobs:
           app-name: 'care-manager-api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}
-          package: dist # Deploy the dist folder
+          package: . # Deploy the current directory
