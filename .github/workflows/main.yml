@@ -20,7 +20,7 @@ jobs:
 
       - name: Install dependencies and build
         run: |
-          cd care_manager-api  # Ensure we're in the root of the backend project
+          cd ${GITHUB_WORKSPACE}  # Ensure we're in the root of the backend project
           npm install
           npm run build --if-present
           # npm run test --if-present
