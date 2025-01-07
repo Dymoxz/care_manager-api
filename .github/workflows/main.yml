@@ -30,10 +30,6 @@ jobs:
           cd ${GITHUB_WORKSPACE}/dist  # Ensure you're in the dist folder for zipping
           zip -r data-api-release.zip ./*
 
-      - name: Check if the zip file exists
-        run: |
-          ls -l ${GITHUB_WORKSPACE}/data-api-release.zip  # Check if the zip file exists before upload
-
       - name: Upload data-api artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
