@@ -32,6 +32,9 @@ export class Patient {
     @Prop()
     diet: string;
 
+    @Prop()
+    careTaker: string;
+
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);
