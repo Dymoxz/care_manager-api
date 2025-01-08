@@ -50,8 +50,8 @@ export class PatientController {
     }
 
     @Get('/room/:roomNumber')
-    async getPatientByRoom(@Param('roomNumber') roomNumber: string): Promise<Patient> {
+    async getPatientByRoom(@Param('roomNumber') roomNumber: string): Promise<Patient[]> {
         console.log('Get a patient by room');
-        return this.patientService.getPatientByRoom(roomNumber);
+        return this.patientService.getPatientsByRoom(roomNumber);
     }
 }

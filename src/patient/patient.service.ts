@@ -105,13 +105,13 @@ export class PatientService {
     return result;
   }
 
-  async getPatientByRoom(roomNumber: string): Promise<Patient> {
+  async getPatientsByRoom(roomNumber: string): Promise<Patient[]> {
     const room = await this.roomModel.findOne({ roomNumber }).exec();
     if (!room) {
       throw new Error(`Room with roomNumber ${roomNumber} not found`);
     }
 
-    return this.patientModel.findOne({ room: room._id }).exec();
+    return this.patientModel.find({ room: room._id }).exec();
   }
 
 }
