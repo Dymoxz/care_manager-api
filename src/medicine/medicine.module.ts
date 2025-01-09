@@ -10,5 +10,6 @@ import { MedicineController } from './medicine.controller';
   ],
   controllers: [MedicineController],
   providers: [MedicineService],
+  exports: [MongooseModule],
 })
 export class MedicineModule {}

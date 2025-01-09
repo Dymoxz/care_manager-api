@@ -8,11 +8,13 @@ export class Room {
   roomNumber: number
 
   @Prop()
-  quarantine: boolean
-
-  @Prop()
   floor: number
 
+  @Prop(  )
+  maxCapacity: number
+
+  @Prop()
+  isScaled: boolean
 }
 
 export const RoomSchema = SchemaFactory.createForClass(Room);

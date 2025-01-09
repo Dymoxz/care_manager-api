@@ -7,7 +7,7 @@ export type MedicineDocument = HydratedDocument<Medicine>;
 @Schema()
 export class Medicine {
   @Prop({required: true, unique: true})
-  medicineName: string
+  atcCode: string
 
 }
 

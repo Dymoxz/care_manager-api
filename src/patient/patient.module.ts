@@ -4,10 +4,12 @@ import {PatientService} from "./patient.service";
 import {MongooseModule} from "@nestjs/mongoose";
 import {PatientSchema} from "./patient.schema";
 import { RoomModule } from '../room/room.module';
+import { ClinicalProfileModule } from '../clinicalProfile/clinicalProfile.module';
+import { MedicineModule } from '../medicine/medicine.module';
 
 @Module({
     imports: [
-        MongooseModule.forFeature([{name: 'Patient', schema: PatientSchema, collection: 'patients'}]), RoomModule,
+        MongooseModule.forFeature([{name: 'Patient', schema: PatientSchema, collection: 'patients'}]), RoomModule, ClinicalProfileModule, MedicineModule
 
     ],
     controllers: [PatientController],

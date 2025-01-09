@@ -1,10 +1,15 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
+
+export type AgreementDocument = HydratedDocument<Agreement>;
 
 @Schema()
-export class Agreement{
+export class Agreement {
   @Prop({ required: true })
-  Description: string
+  description: string;
 
-  @Prop({required:true})
-  Title: string
+  @Prop({ required: true })
+  title: string;
 }
+
+export const AgreementSchema = SchemaFactory.createForClass(Agreement);
