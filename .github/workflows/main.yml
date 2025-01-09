@@ -43,13 +43,15 @@ jobs:
       name: 'Production'
 
     steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v4
-        with:
-          name: data-api
+      - name: Change directory to artifact location
+        run: |
+          ls -la
+          unzip data-api-release.zip
+          ls -la
+          cd ./dist # Navigate to the location of package.json
 
       - name: Install dependencies
-        run: npm install # Or npm install if you don't have a lock file
+        run: npm ci # Use npm ci for lock file
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
