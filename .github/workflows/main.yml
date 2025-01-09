@@ -48,11 +48,14 @@ jobs:
         with:
           name: data-api
 
-      - name: List dist directory on Azure
-        run: ls -R /home/site/wwwroot/dist
+      - name: List dist directory on Azure (before unzipping)
+        run: ls -R /home/site/wwwroot/dist || echo "dist directory not found"
 
       - name: Unzip artifact for deployment
-        run: unzip data-api-release.zip
+        run: unzip data-api-release.zip -d /home/site/wwwroot
+
+      - name: List dist directory on Azure (after unzipping)
+        run: ls -R /home/site/wwwroot/dist || echo "dist directory not found"
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
