@@ -2,6 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { Room } from '../room/room.schema';
 import { Agreement } from '../agreement/agreement.schema';
+import { ClinicalProfile } from '../clinicalProfile/clinicalProfile.schema';
 
 export type PatientDocument = HydratedDocument<Patient>;
 
@@ -28,8 +29,8 @@ export class Patient {
     @Prop()
     weight: number;
 
-    @Prop()
-    clinicalProfile: string;
+    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ClinicalProfile' })
+    clinicalProfile: ClinicalProfile;
 
     @Prop()
     diet: string;
@@ -43,6 +44,8 @@ export class Patient {
     @Prop({ type: [Agreement], default: [] }) // Embedded Agreement schemas
     agreements: Agreement[]
 
+    @Prop()
+    isQuarantined: boolean
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { CareTaker } from './careTaker.schema';
 import { GovService } from '../gov/gov.service';
+import { CareTaker } from '../careTaker/careTaker.schema';
 
 @Injectable()
 export class AuthService {
