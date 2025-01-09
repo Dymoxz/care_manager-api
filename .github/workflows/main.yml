@@ -51,16 +51,11 @@ jobs:
       - name: List dist directory on Azure (before unzipping)
         run: ls -R /home/site/wwwroot/dist || echo "dist directory not found"
 
-      - name: Create dist directory on Azure
-        run: |
-          mkdir -p /home/site/wwwroot/dist
+      - name: Unzip artifact into wwwroot directory
+        run: unzip data-api-release.zip -d /home/site/wwwroot/
 
-      - name: Unzip artifact into dist folder
-        run: |
-          unzip data-api-release.zip -d /home/site/wwwroot/
-
-      - name: List dist directory on Azure (after unzipping)
-        run: ls -R /home/site/wwwroot/dist || echo "dist directory not found"
+      - name: List wwwroot directory on Azure (after unzipping)
+        run: ls -R /home/site/wwwroot || echo "wwwroot directory not found"
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
