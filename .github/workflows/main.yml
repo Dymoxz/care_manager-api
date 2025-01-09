@@ -48,14 +48,6 @@ jobs:
         with:
           name: data-api
 
-      - name: List dist directory on Azure (before unzipping)
-        run: ls -R /home/site/wwwroot/dist || echo "dist directory not found"
-
-      - name: Unzip artifact into wwwroot directory
-        run: unzip data-api-release.zip -d /home/site/wwwroot/
-
-      - name: List wwwroot directory on Azure (after unzipping)
-        run: ls -R /home/site/wwwroot || echo "wwwroot directory not found"
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
@@ -64,4 +56,4 @@ jobs:
           app-name: 'care-manager-api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}
-          package: .
+          package: data-api-release.zip
