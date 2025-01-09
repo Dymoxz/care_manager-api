@@ -100,21 +100,36 @@ export class PatientService {
     return updatedPatient;
   }
 
-  async getPatient(bsn: string): Promise<Patient> {
-    const result = this.patientModel
-      .findById({ bsn: bsn })
-      .populate('room')
+  async getPatient(patientNumber: string): Promise<Patient> {
+    const patient = await this.patientModel
+      .findOne({ patientNumber: patientNumber }) // Use `findOne` for a query based on `patientNumber`
+      .populate('room') // Populate room details
+      .populate('clinicalProfile') // Populate clinical profile details
+      .populate('agreements') // Populate agreements
       .exec();
-    console.log('Get a patient', result);
-    return result;
+
+    if (!patient) {
+      console.log(`No patient found with BSN: ${patientNumber}`);
+      return null;
+    }
+
+    // If the patient has medicine ATC codes, query the Medicine model for full details
+    if (patient.medicineAtcCodes && patient.medicineAtcCodes.length > 0) {
+      (patient as any)._doc.medicines = await this.medicineModel
+        .find({ atcCode: { $in: patient.medicineAtcCodes } })
+        .exec(); // Attach `medicines` to the patient object
+    }
+
+    console.log('Get a patient', patient);
+    return patient as any; // Ensure the returned object includes the medicines
   }
 
   async updatePatient(
-    bsn: string,
+    patientNumber: string,
     updatePatientDto: UpdatePatientDto,
   ): Promise<Patient> {
     const result = this.patientModel
-      .findByIdAndUpdate({ bsn: bsn }, updatePatientDto, { new: true })
+      .findByIdAndUpdate({ patientNumber: patientNumber }, updatePatientDto, { new: true })
       .exec();
     console.log('Update a patient', result);
     return result;
@@ -129,19 +144,19 @@ export class PatientService {
     return result;
   }
 
-  async deletePatient(bsn: string): Promise<Patient> {
-    const result = this.patientModel.findByIdAndDelete({ bsn: bsn }).exec();
+  async deletePatient(patientNumber: string): Promise<Patient> {
+    const result = this.patientModel.findByIdAndDelete({ patientNumber: patientNumber }).exec();
     console.log('Delete a patient', result);
     return result;
   }
 
   async assignCareTaker(
-    childrenBsnList: string[],
+    patientNumberList: string[],
     careTakerBig: string,
   ): Promise<any[]> {
     const result = [];
-    for (const childBsn of childrenBsnList) {
-      const patient = await this.patientModel.findOne({ bsn: childBsn }).exec();
+    for (const patientNumber of patientNumberList) {
+      const patient = await this.patientModel.findOne({ patientNumber: patientNumber }).exec();
       patient.careTaker = careTakerBig;
       const updatedPatient = await patient.save();
       result.push(updatedPatient);
