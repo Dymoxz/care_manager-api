@@ -6,7 +6,7 @@ export type CareTakerDocument = HydratedDocument<CareTaker>;
 @Schema()
 export class CareTaker {
     @Prop({required: true, unique: true})
-    big: number
+    big: string
 }
 
 export const CareTakerSchema = SchemaFactory.createForClass(CareTaker);

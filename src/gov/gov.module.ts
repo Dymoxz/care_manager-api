@@ -12,5 +12,6 @@ import { GovService } from './gov.service';
   ],
   controllers: [GovController],
   providers: [GovService],
+  exports: [GovService]
 })
 export class GovModule {}
