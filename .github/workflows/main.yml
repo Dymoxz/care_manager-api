@@ -48,6 +48,9 @@ jobs:
         with:
           name: data-api
 
+      - name: List dist directory on Azure
+        run: ls -R /home/site/wwwroot/dist
+
       - name: Unzip artifact for deployment
         run: unzip data-api-release.zip
 
