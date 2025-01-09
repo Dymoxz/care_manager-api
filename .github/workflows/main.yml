@@ -23,13 +23,11 @@ jobs:
           npm install
           npm run build
           # npm run test --if-present
-          
 
       - name: Zip artifact for deployment
         run: |
-          cd dist/src
-          zip -r ../data-api-release.zip *
-      
+          cd dist
+          zip -r ../data-api-release.zip .
 
       - name: Upload data-api artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -52,7 +50,6 @@ jobs:
 
       - name: Unzip artifact for deployment
         run: unzip data-api-release.zip
-
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
