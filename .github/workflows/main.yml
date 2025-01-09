@@ -24,9 +24,17 @@ jobs:
           npm run build
           # npm run test --if-present
 
+      - name: Create deployment directory
+        run: |
+          mkdir deploy
+          cp -r dist deploy
+          cp package.json deploy
+          cp package-lock.json deploy
+
+
       - name: Zip artifact for deployment
         run: |
-          cd dist
+          cd deploy
           zip -r ../data-api-release.zip .
 
       - name: Upload data-api artifact for deployment job
@@ -43,12 +51,17 @@ jobs:
       name: 'Production'
 
     steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: data-api
+
       - name: Change directory to artifact location
         run: |
           ls -la
           unzip data-api-release.zip
           ls -la
-          cd ./dist # Navigate to the location of package.json
+          cd ./
 
       - name: Install dependencies
         run: npm ci # Use npm ci for lock file
@@ -60,4 +73,4 @@ jobs:
           app-name: 'care-manager-api'
           slot-name: 'Production'
           publish-profile: ${{ secrets.NESTJS_PUBLISH_PROFILE }}
-          package: data-api-release.zip
+          package: ./ # Use current directory. the deploy action should unzip as well.
