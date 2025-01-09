@@ -21,14 +21,15 @@ jobs:
       - name: npm install, build, and test
         run: |
           npm install
-          npm run build --if-present
+          npm run build
           # npm run test --if-present
           
 
       - name: Zip artifact for deployment
         run: |
-          cd dist
-          zip -r ../data-api-release.zip ./*
+          cd dist/src
+          zip -r ../data-api-release.zip *
+      
 
       - name: Upload data-api artifact for deployment job
         uses: actions/upload-artifact@v4
