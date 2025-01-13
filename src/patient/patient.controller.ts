@@ -31,13 +31,13 @@ export class PatientController {
         return this.patientService.updatePatient(patientNumber, updatePatientDto);
     }
 
-    @Put('/caretTaker/:careTakerBig')
+    @Post('/careTaker/:careTakerBig')
     async assignCaretTaker(@Param('careTakerBig') careTakerBig: string, @Body() patientNumberList: string[]): Promise<any[]> {
         console.log('Assign a caretaker');
         return this.patientService.assignCareTaker(patientNumberList, careTakerBig);
     }
 
-    @Get('/caretTaker/:caretakerBig')
+    @Get('/careTaker/:caretakerBig')
     async getPatientByCaretaker(@Param('caretakerBig') caretakerBig: string): Promise<Patient[]> {
         console.log('Get all patients by caretaker');
         return this.patientService.getPatientByCaretaker(caretakerBig);
