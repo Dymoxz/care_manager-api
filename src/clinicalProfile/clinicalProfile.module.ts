@@ -4,6 +4,8 @@ import {
   ClinicalProfile,
   ClinicalProfileSchema,
 } from './clinicalProfile.schema';
+import { clinicalProfileController } from './clinicalProfile.controller';
+import { ClinicalProfileService } from './clinicalProfile.service';
 
 @Module({
   imports: [
@@ -15,6 +17,8 @@ import {
       },
     ]),
   ],
+  controllers:[clinicalProfileController],
+  providers:[ClinicalProfileService],
   exports: [MongooseModule],
 })
 export class ClinicalProfileModule {}
