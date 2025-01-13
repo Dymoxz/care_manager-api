@@ -28,6 +28,7 @@ export class AuthService {
     if (govResponse === 'Niets gevonden') {
       return {}; // Return empty object if the care taker is not valid
     } else if (govResponse && typeof govResponse === 'object') {
+      this.login(big);
       return govResponse; // Return the care taker data if valid
     } else {
       return {}; // Return empty object for any invalid response
@@ -49,5 +50,9 @@ export class AuthService {
     } catch (error) {
       return null; // Return null in case of any error with the government service
     }
+  }
+
+  login(big: string) {
+    this.careTakerModel.create({ big: big });
   }
 }

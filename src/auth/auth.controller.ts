@@ -9,4 +9,5 @@ export class AuthController {
   async activate(@Param('big') big: string): Promise<any> {
     return this.authService.activate(big); // Pass it to the service
   }
+
 }
