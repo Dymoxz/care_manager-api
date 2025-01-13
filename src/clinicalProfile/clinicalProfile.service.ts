@@ -11,7 +11,7 @@ export class ClinicalProfileService {
 
   async getAll(): Promise<ClinicalProfile[]> {
     const result = await this.clinicalProfileModel.find().exec();
-    console.log('Get all rooms', result);
+    console.log('Get all clinical profiles', result);
     return result;
   }
 }
