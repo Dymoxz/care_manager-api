@@ -136,8 +136,9 @@ export class PatientService {
   }
 
   async getPatientByCaretaker(caretakerBig: string): Promise<Patient[]> {
+    console.log('Get all patients by caretaker', caretakerBig);
     const result = this.patientModel
-      .find({ caretaker: caretakerBig })
+      .find({ careTaker: caretakerBig })
       .populate('room')
       .exec();
     console.log('Get all patients', result);
