@@ -53,6 +53,21 @@ export class PatientController {
         return this.patientService.getPatientByCaretaker(caretakerBig);
     }
 
+    @Delete('/careTaker/:careTakerBig')
+    async deleteCareaTaker(
+      @Param('careTakerBig') careTakerBig: string,
+      @Body() body: { patientNumberList: string[] },
+    ): Promise<any[]> {
+        const { patientNumberList } = body;
+
+        if (!Array.isArray(patientNumberList) || patientNumberList.length === 0) {
+            throw new BadRequestException('Invalid or empty patientNumberList');
+        }
+
+        console.log('Removing caretaker from patient', careTakerBig);
+        return this.patientService.removeCareTaker(patientNumberList, careTakerBig);
+    }
+
     @Delete(':patientNumber')
     async deletePatient(@Param('patientNumber') patientNumber: string): Promise<Patient> {
         console.log('Delete a patient');
