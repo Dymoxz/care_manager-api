@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { Patient } from './patient.schema';
 import { CreatePatientDto, UpdatePatientDto } from './patient.dto';
@@ -32,10 +32,20 @@ export class PatientController {
     }
 
     @Post('/careTaker/:careTakerBig')
-    async assignCaretTaker(@Param('careTakerBig') careTakerBig: string, @Body() patientNumberList: string[]): Promise<any[]> {
-        console.log('Assign a caretaker');
+    async assignCaretTaker(
+      @Param('careTakerBig') careTakerBig: string,
+      @Body() body: { patientNumberList: string[] },
+    ): Promise<any[]> {
+        const { patientNumberList } = body;
+
+        if (!Array.isArray(patientNumberList) || patientNumberList.length === 0) {
+            throw new BadRequestException('Invalid or empty patientNumberList');
+        }
+
+        console.log('Assigning caretaker', careTakerBig);
         return this.patientService.assignCareTaker(patientNumberList, careTakerBig);
     }
+
 
     @Get('/careTaker/:caretakerBig')
     async getPatientByCaretaker(@Param('caretakerBig') caretakerBig: string): Promise<Patient[]> {

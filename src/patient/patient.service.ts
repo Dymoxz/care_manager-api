@@ -157,14 +157,23 @@ export class PatientService {
   ): Promise<any[]> {
     const result = [];
     for (const patientNumber of patientNumberList) {
-      const patient = await this.patientModel.findOne({ patientNumber: patientNumber }).exec();
-      patient.careTaker = careTakerBig;
-      const updatedPatient = await patient.save();
-      result.push(updatedPatient);
+      try {
+        const patient = await this.patientModel.findOne({ patientNumber: patientNumber }).exec();
+        if (!patient) {
+          console.warn(`Patient with number ${patientNumber} not found.`);
+          continue; // Skip if patient doesn't exist
+        }
+        patient.careTaker = careTakerBig;
+        const updatedPatient = await patient.save();
+        result.push(updatedPatient);
+      } catch (error) {
+        console.error(`Error processing patient ${patientNumber}:`, error);
+      }
     }
     console.log('Assign a caretaker', result);
     return result;
   }
+
 
   async getPatientsByRoom(roomNumber: string): Promise<Patient[]> {
     const room = await this.roomModel.findOne({ roomNumber }).exec();
