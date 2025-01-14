@@ -226,4 +226,27 @@ export class PatientService {
 
     return { message: 'Shift ended' };
   }
+
+  async getPatientList(): Promise<any[]> {
+    const patients = await this.patientModel
+      .find()
+      .populate('room' )
+      .select({
+        _id: 0,
+        isQuarantined: 1,
+        patientNumber: 1,
+        firstName: 1,
+        lastName: 1,
+        room: 1
+      })
+      .exec();
+    return patients.map(patient => ({
+      room: patient.room,
+      isQuarantined: patient.isQuarantined,
+      patientNumber: patient.patientNumber,
+      firstName: patient.firstName,
+      lastName: patient.lastName
+    }));
+
+  }
 }

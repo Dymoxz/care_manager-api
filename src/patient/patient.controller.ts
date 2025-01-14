@@ -23,6 +23,12 @@ export class PatientController {
         return this.patientService.getAll();
     }
 
+    @Get('list')
+    async getPatientList(): Promise<any[]> {
+        console.log('Get a patient list');
+        return this.patientService.getPatientList();
+    }
+
     @Post()
     async createPatient(@Body() body: { createPatientDto: any; roomNumber: number }): Promise<Patient> {
         console.log('Create a patient with room assignment');
@@ -100,4 +106,6 @@ export class PatientController {
         console.log('Get a patient by room');
         return this.patientService.getPatientsByRoom(roomNumber);
     }
+
+
 }
