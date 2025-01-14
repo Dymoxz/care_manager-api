@@ -145,10 +145,16 @@ export class PatientService {
     return result;
   }
 
-  async deletePatient(patientNumber: string): Promise<Patient> {
-    const result = this.patientModel.findByIdAndDelete({ patientNumber: patientNumber }).exec();
-    console.log('Delete a patient', result);
-    return result;
+  async deletePatient(patientNumber: string): Promise<Patient | null> { // Update the return type
+    try {
+      const result = await this.patientModel.findOneAndDelete({ patientNumber: patientNumber }).exec(); // Await exec and type
+      console.log('Delete a patient', result);
+      return result;
+    } catch (error) {
+      console.error("Error deleting patient:", error);
+      return null
+    }
+
   }
 
   async assignCareTaker(

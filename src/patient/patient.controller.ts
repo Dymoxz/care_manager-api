@@ -1,4 +1,14 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import {
+    BadRequestException,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    NotFoundException,
+    Param,
+    Post,
+    Put,
+} from '@nestjs/common';
 import { PatientService } from './patient.service';
 import { Patient } from './patient.schema';
 import { CreatePatientDto, UpdatePatientDto } from './patient.dto';
@@ -56,8 +66,13 @@ export class PatientController {
     @Delete(':patientNumber')
     async deletePatient(@Param('patientNumber') patientNumber: string): Promise<Patient> {
         console.log('Delete a patient');
-        return this.patientService.deletePatient(patientNumber);
+        const deletedPatient = await this.patientService.deletePatient(patientNumber);
+        if (!deletedPatient) {
+            throw new NotFoundException('Patient not found');
+        }
+        return deletedPatient;
     }
+
 
     @Get('/room/:roomNumber')
     async getPatientByRoom(@Param('roomNumber') roomNumber: string): Promise<Patient[]> {
