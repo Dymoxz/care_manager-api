@@ -218,4 +218,12 @@ export class PatientService {
 
     return this.patientModel.find({ room: room._id }).exec();
   }
+
+  async endShift(careTakerBig: string) {
+    //find all patients with the careTakerBig and set the careTaker to null
+    await this.patientModel.updateMany({ careTaker: careTakerBig }, { careTaker: null }).exec();
+    console.log('Ending shift for caretaker', careTakerBig);
+
+    return { message: 'Shift ended' };
+  }
 }

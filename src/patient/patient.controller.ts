@@ -78,6 +78,12 @@ export class PatientController {
         return this.patientService.removeCareTaker(patientNumberList, careTakerBig);
     }
 
+    @Delete('/endShift/:careTakerBig')
+    async endShift(@Param('careTakerBig') careTakerBig: string): Promise<any> {
+        console.log('Ending shift for caretaker', careTakerBig);
+        return this.patientService.endShift(careTakerBig);
+    }
+
     @Delete(':patientNumber')
     async deletePatient(@Param('patientNumber') patientNumber: string): Promise<Patient> {
         console.log('Delete a patient');
