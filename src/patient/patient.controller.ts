@@ -107,5 +107,12 @@ export class PatientController {
         return this.patientService.getPatientsByRoom(roomNumber);
     }
 
+    @Get('/clinicalProfile/:clinicalProfile')
+    async getPatientByClinicalProfile(
+      @Param('clinicalProfile') clinicalProfile: string
+    ): Promise<Patient[]> {
+        console.log('Get a patient by clinical profile');
+        return this.patientService.getPatientsByClinicalProfile(clinicalProfile);
+    }
 
 }

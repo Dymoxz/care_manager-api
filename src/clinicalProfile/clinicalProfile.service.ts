@@ -1,17 +1,17 @@
-import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-import { ClinicalProfile } from './clinicalProfile.schema';
+  import { Injectable } from '@nestjs/common';
+  import { InjectModel } from '@nestjs/mongoose';
+  import { Model } from 'mongoose';
+  import { ClinicalProfile } from './clinicalProfile.schema';
 
-@Injectable()
-export class ClinicalProfileService {
-  constructor(
-    @InjectModel(ClinicalProfile.name) private clinicalProfileModel: Model<ClinicalProfile>,
-  ) {}
+  @Injectable()
+  export class ClinicalProfileService {
+    constructor(
+      @InjectModel(ClinicalProfile.name) private clinicalProfileModel: Model<ClinicalProfile>,
+    ) {}
 
-  async getAll(): Promise<ClinicalProfile[]> {
-    const result = await this.clinicalProfileModel.find().exec();
-    console.log('Get all clinical profiles', result);
-    return result;
+    async getAll(): Promise<ClinicalProfile[]> {
+      const result = await this.clinicalProfileModel.find().exec();
+      console.log('Get all clinical profiles', result);
+      return result;
+    }
   }
-}
