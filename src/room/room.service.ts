@@ -14,4 +14,23 @@ export class RoomService {
     console.log('Get all rooms', result);
     return result;
   }
+
+  async scaleRoom(body: { roomNumber: number, floor: number }): Promise<any> {
+    const { roomNumber, floor } = body;
+    console.log('Scale room', roomNumber);
+    console.log('Scale floor', floor);
+    const filter = { roomNumber, floor };
+    const update = { $set: { isScaled: true } };
+
+
+    const result = await this.roomModel.findOneAndUpdate(
+      filter,
+      update,
+      { new: true, runValidators: true }
+    ).exec();
+
+    console.log('Update Result:', result);
+
+    return result;
+  }
 }

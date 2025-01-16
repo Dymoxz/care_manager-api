@@ -4,16 +4,16 @@ import { HydratedDocument } from 'mongoose';
 export type RoomDocument = HydratedDocument<Room>;
 
 export class Room {
-  @Prop({required: true, unique: true})
+  @Prop({ type: Number, required: true})
   roomNumber: number
 
-  @Prop()
+  @Prop({ type: Number, required: true})
   floor: number
 
-  @Prop(  )
+  @Prop( {type: Number, required: true} )
   maxCapacity: number
 
-  @Prop()
+  @Prop({ type: Boolean, default: false})
   isScaled: boolean
 }
 

@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post, Put } from '@nestjs/common';
 import { RoomService } from './room.service';
 import { Room } from './room.schema';
 
@@ -9,5 +9,13 @@ export class RoomController {
   @Get()
   async getAll(): Promise<Room[]> {
     return this.roomService.getAll();
+  }
+
+  @Put()
+  async scaleRoom(
+    @Body() body: { roomNumber: number, floor: number },
+  ): Promise<any> {
+    console.log('Scale a room', body);
+    return this.roomService.scaleRoom(body);
   }
 }
