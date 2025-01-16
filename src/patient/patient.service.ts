@@ -21,7 +21,7 @@ export class PatientService {
     const patients = await this.patientModel
       .find()
       .populate('room') // Populate room details
-      .populate('clinicalProfile') // Populate clinical profile details
+      .populate('clinicalProfiles') // Populate clinical profile details
       .exec();
 
     for (const patient of patients) {
@@ -39,23 +39,29 @@ export class PatientService {
   }
 
   async createPatient(data: any): Promise<Patient> {
-    const { createPatientDto, roomNumber, clinicalProfile, medicineAtcCodes } =
+    const { createPatientDto, roomNumber, clinicalProfiles, medicineAtcCodes } =
       data;
 
-    // Get the clinical profile object based on the passed clinicalProfile string
-    const defaultProfile = await this.clinicalProfileModel
-      .findOne({ clinicalProfile })
-      .exec();
+    // Get all clinical profile objects based on the passed clinicalProfiles array
+    const profiles = await Promise.all(
+      clinicalProfiles.map(async (profileName: string) => {
+        const profile = await this.clinicalProfileModel
+          .findOne({ clinicalProfile: profileName })
+          .exec();
 
-    if (!defaultProfile) {
-      throw new Error(`ClinicalProfile '${clinicalProfile}' not found`);
-    }
+        if (!profile) {
+          throw new Error(`ClinicalProfile '${profileName}' not found`);
+        }
+
+        return profile._id;
+      }),
+    );
 
     // Create the new patient object
     const newPatient = new this.patientModel({
       ...createPatientDto,
-      clinicalProfile: defaultProfile._id, // Set the reference to the ClinicalProfile
-      medicineAtcCodes: medicineAtcCodes, // Set the reference to the Medicine
+      clinicalProfiles: profiles, // Set the array of ClinicalProfile references
+      medicineAtcCodes: medicineAtcCodes,
     });
 
     // Save the patient and assign a room in a single operation
@@ -67,11 +73,11 @@ export class PatientService {
       roomNumber,
     );
 
-    // Return the updated patient data, including populated room and clinicalProfile
+    // Return the updated patient data, including populated room and clinicalProfiles
     const result = await this.patientModel
       .findOne({ patientNumber: updatedPatient.patientNumber })
       .populate('room')
-      .populate('clinicalProfile') // Populate the clinicalProfile field as well
+      .populate('clinicalProfiles') // Populate the clinicalProfiles array
       .exec();
 
     console.log('Created patient', result);
@@ -104,7 +110,7 @@ export class PatientService {
     const patient = await this.patientModel
       .findOne({ patientNumber: patientNumber }) // Use `findOne` for a query based on `patientNumber`
       .populate('room') // Populate room details
-      .populate('clinicalProfile') // Populate clinical profile details
+      .populate('clinicalProfiles') // Populate clinical profile details
       .populate('agreements') // Populate agreements
       .exec();
 
@@ -129,7 +135,9 @@ export class PatientService {
     updatePatientDto: UpdatePatientDto,
   ): Promise<Patient> {
     const result = this.patientModel
-      .findByIdAndUpdate({ patientNumber: patientNumber }, updatePatientDto, { new: true })
+      .findByIdAndUpdate({ patientNumber: patientNumber }, updatePatientDto, {
+        new: true,
+      })
       .exec();
     console.log('Update a patient', result);
     return result;
@@ -145,16 +153,18 @@ export class PatientService {
     return result;
   }
 
-  async deletePatient(patientNumber: string): Promise<Patient | null> { // Update the return type
+  async deletePatient(patientNumber: string): Promise<Patient | null> {
+    // Update the return type
     try {
-      const result = await this.patientModel.findOneAndDelete({ patientNumber: patientNumber }).exec(); // Await exec and type
+      const result = await this.patientModel
+        .findOneAndDelete({ patientNumber: patientNumber })
+        .exec(); // Await exec and type
       console.log('Delete a patient', result);
       return result;
     } catch (error) {
-      console.error("Error deleting patient:", error);
-      return null
+      console.error('Error deleting patient:', error);
+      return null;
     }
-
   }
 
   async assignCareTaker(
@@ -164,7 +174,9 @@ export class PatientService {
     const result = [];
     for (const patientNumber of patientNumberList) {
       try {
-        const patient = await this.patientModel.findOne({ patientNumber: patientNumber }).exec();
+        const patient = await this.patientModel
+          .findOne({ patientNumber: patientNumber })
+          .exec();
         if (!patient) {
           console.warn(`Patient with number ${patientNumber} not found.`);
           continue; // Skip if patient doesn't exist
@@ -187,7 +199,9 @@ export class PatientService {
     const result = [];
     for (const patientNumber of patientNumberList) {
       try {
-        const patient = await this.patientModel.findOne({ patientNumber }).exec();
+        const patient = await this.patientModel
+          .findOne({ patientNumber })
+          .exec();
         if (!patient) {
           console.warn(`Patient with number ${patientNumber} not found.`);
           continue; // Skip if patient doesn't exist
@@ -209,7 +223,6 @@ export class PatientService {
     return result;
   }
 
-
   async getPatientsByRoom(roomNumber: string): Promise<Patient[]> {
     const room = await this.roomModel.findOne({ roomNumber }).exec();
     if (!room) {
@@ -221,7 +234,9 @@ export class PatientService {
 
   async endShift(careTakerBig: string) {
     //find all patients with the careTakerBig and set the careTaker to null
-    await this.patientModel.updateMany({ careTaker: careTakerBig }, { careTaker: null }).exec();
+    await this.patientModel
+      .updateMany({ careTaker: careTakerBig }, { careTaker: null })
+      .exec();
     console.log('Ending shift for caretaker', careTakerBig);
 
     return { message: 'Shift ended' };
@@ -230,23 +245,50 @@ export class PatientService {
   async getPatientList(): Promise<any[]> {
     const patients = await this.patientModel
       .find()
-      .populate('room' )
+      .populate('room')
       .select({
         _id: 0,
         isQuarantined: 1,
         patientNumber: 1,
         firstName: 1,
         lastName: 1,
-        room: 1
+        room: 1,
       })
       .exec();
-    return patients.map(patient => ({
+    return patients.map((patient) => ({
       room: patient.room,
       isQuarantined: patient.isQuarantined,
       patientNumber: patient.patientNumber,
       firstName: patient.firstName,
-      lastName: patient.lastName
+      lastName: patient.lastName,
     }));
-
   }
+
+  async getPatientsByClinicalProfile(
+    clinicalProfileName: string,
+  ): Promise<Patient[]> {
+    // 1. Find the clinical profile document by name
+    const profile = await this.clinicalProfileModel
+      .findOne({ clinicalProfile: clinicalProfileName })
+      .exec();
+
+    if (!profile) {
+      throw new Error(`ClinicalProfile '${clinicalProfileName}' not found`);
+    }
+
+    console.log('Found clinical profile:', profile);
+
+    // 2. Find patients that have this profile's ID within their 'clinicalProfiles' array
+    const patients = await this.patientModel
+      .find({ clinicalProfiles: { $in: [profile._id] } })
+      .populate('room')
+      .populate('clinicalProfiles') // Populate the clinicalProfiles array
+      .exec();
+
+    console.log('Query used:', { clinicalProfiles: { $in: [profile._id] } });
+    console.log('Found patients:', patients);
+    return patients;
+  }
+
+
 }

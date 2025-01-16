@@ -30,8 +30,8 @@ export class Patient {
   @Prop()
   weight: number;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'ClinicalProfile' })
-  clinicalProfile: ClinicalProfile;
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'ClinicalProfile' }] })
+  clinicalProfiles: ClinicalProfile[];
 
   @Prop()
   diet: string;
