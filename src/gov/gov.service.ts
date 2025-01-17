@@ -15,7 +15,8 @@ export class GovService {
     //this.logger.debug("client services: " + JSON.stringify(this.client.describe(), null, 2));
     //_xml: is to replace the whoel xml body
     return this.client.ListHcpApprox4Async({
-      _xml:`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ext="http://services.cibg.nl/ExternalUser">
+      _xml:`<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" 
+              xmlns:ext="http://services.cibg.nl/ExternalUser">
               <soapenv:Body>
                   <ext:listHcpApproxRequest>
                     <ext:RegistrationNumber>${registrationNumber}</ext:RegistrationNumber>
