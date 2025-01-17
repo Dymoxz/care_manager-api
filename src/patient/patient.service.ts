@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Patient } from './patient.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
@@ -6,7 +6,7 @@ import { UpdatePatientDto } from './patient.dto';
 import { Room } from '../room/room.schema';
 import { ClinicalProfile } from '../clinicalProfile/clinicalProfile.schema';
 import { Medicine } from '../medicine/medicine.schema';
-import { MedCheck } from 'src/medcheck/medcheck.schema';
+import { MedCheck } from '../medcheck/medcheck.schema';
 
 @Injectable()
 export class PatientService {
@@ -103,7 +103,7 @@ export class PatientService {
       .exec();
 
     if (!updatedPatient) {
-      throw new Error(`Patient with patientNumber ${patientNumber} not found`);
+      throw new NotFoundException(`Patient with patientNumber "${patientNumber}" not found`);
     }
 
     return updatedPatient;
