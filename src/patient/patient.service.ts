@@ -6,6 +6,7 @@ import { UpdatePatientDto } from './patient.dto';
 import { Room } from '../room/room.schema';
 import { ClinicalProfile } from '../clinicalProfile/clinicalProfile.schema';
 import { Medicine } from '../medicine/medicine.schema';
+import { MedCheck } from 'src/medcheck/medcheck.schema';
 
 @Injectable()
 export class PatientService {
@@ -15,6 +16,7 @@ export class PatientService {
     @InjectModel(ClinicalProfile.name)
     private clinicalProfileModel: Model<ClinicalProfile>,
     @InjectModel(Medicine.name) private medicineModel: Model<Medicine>,
+    @InjectModel(MedCheck.name) private medCheckModel: Model<MedCheck>,
   ) {}
 
   async getAll(): Promise<Patient[]> {
@@ -22,6 +24,7 @@ export class PatientService {
       .find()
       .populate('room') // Populate room details
       .populate('clinicalProfiles') // Populate clinical profile details
+      .populate('medChecks') // Populate agreements
       .exec();
 
     for (const patient of patients) {
@@ -112,6 +115,7 @@ export class PatientService {
       .populate('room') // Populate room details
       .populate('clinicalProfiles') // Populate clinical profile details
       .populate('agreements') // Populate agreements
+      .populate('medChecks') // Populate medChecks
       .exec();
 
     if (!patient) {
@@ -290,5 +294,17 @@ export class PatientService {
     return patients;
   }
 
+  async createMedCheck(data: any, patientNumber: string): Promise<MedCheck> {
+    const medCheck = new this.medCheckModel(data);
+    const resultPatient = await this.patientModel.findOneAndUpdate(
+        { patientNumber: patientNumber },
+        { $push: { medCheck: medCheck._id } },
+        { new: true }
+    );
+    
+    console.log("Dit wordt toegevoegd aan de patient: ",resultPatient);
+
+    return medCheck.save();
+    }
 
 }

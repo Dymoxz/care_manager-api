@@ -4,6 +4,7 @@ import { Room } from '../room/room.schema';
 import { Agreement } from '../agreement/agreement.schema';
 import { ClinicalProfile } from '../clinicalProfile/clinicalProfile.schema';
 import { Medicine } from '../medicine/medicine.schema';
+import { MedCheck } from 'src/medcheck/medcheck.schema';
 
 export type PatientDocument = HydratedDocument<Patient>;
 
@@ -50,6 +51,9 @@ export class Patient {
 
   @Prop({ type: [String], default: [] })
   medicineAtcCodes: string[];
+
+  @Prop({ type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'MedCheck' }] })
+  medChecks: MedCheck[];
 }
 
 export const PatientSchema = SchemaFactory.createForClass(Patient);

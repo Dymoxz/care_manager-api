@@ -115,4 +115,12 @@ export class PatientController {
         return this.patientService.getPatientsByClinicalProfile(clinicalProfile);
     }
 
+    @Post("/medcheck/:patientNumber")
+    async createMedCheck(
+        @Body() body: { data:any },
+        @Param('patientNumber') patientNumber: string
+      ): Promise<any> {
+        return this.patientService.createMedCheck(body, patientNumber);
+      }
+
 }
