@@ -298,7 +298,7 @@ export class PatientService {
     const medCheck = new this.medCheckModel(data);
     const resultPatient = await this.patientModel.findOneAndUpdate(
         { patientNumber: patientNumber },
-        { $push: { medCheck: medCheck._id } },
+        { $push: { medChecks: medCheck._id } },
         { new: true }
     );
     
