@@ -9,6 +9,7 @@ import { GovModule } from './gov/gov.module';
 import { AuthModule } from './auth/auth.module';
 import { ClinicalProfileModule } from './clinicalProfile/clinicalProfile.module';
 import { RoomModule } from './room/room.module';
+import { MedCheckModule } from './medcheck/medcheck.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { RoomModule } from './room/room.module';
     ClinicalProfileModule,
     RoomModule,
     AuthModule,
+    MedCheckModule,
     MongooseModule.forRoot(environment.MONGO_URL),
   ],
 
