@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { GovController } from '../gov/gov.controller';
-import { GovService } from '../gov/gov.service';
+import { GovController } from './gov.controller';
+import { GovService } from './gov.service';
 
 describe('GovController', () => {
   let controller: GovController;

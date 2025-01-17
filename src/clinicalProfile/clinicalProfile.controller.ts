@@ -3,7 +3,7 @@ import { ClinicalProfileService } from './clinicalProfile.service';
 import { ClinicalProfile } from './clinicalProfile.schema';
 
 @Controller('clinicalProfile')
-export class clinicalProfileController {
+export class ClinicalProfileController {
   constructor(private readonly clinicalProfileService: ClinicalProfileService) {}
 
   @Get()
