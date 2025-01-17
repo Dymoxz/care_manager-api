@@ -3,6 +3,9 @@
 /node_modules
 /build
 
+#pakcage files
+package-lock.json
+
 # Logs
 logs
 *.log
