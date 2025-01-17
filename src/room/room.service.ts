@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { Room } from './room.schema';
 
 @Injectable()
@@ -15,22 +15,15 @@ export class RoomService {
     return result;
   }
 
-  async scaleRoom(body: { roomNumber: number, floor: number }): Promise<any> {
-    const { roomNumber, floor } = body;
-    console.log('Scale room', roomNumber);
-    console.log('Scale floor', floor);
-    const filter = { roomNumber, floor };
-    const update = { $set: { isScaled: true } };
-
-
+  async scaleRoom(data: any): Promise<Room | null> {
+    console.log(`Updating room with roomNumber: ${data.roomNumber}`);
+    console.log('isScaled', data.isScaled);
     const result = await this.roomModel.findOneAndUpdate(
-      filter,
-      update,
-      { new: true, runValidators: true }
-    ).exec();
-
-    console.log('Update Result:', result);
-
-    return result;
+      { roomNumber: data.roomNumber, floor: data.floor },
+      { $set: {isScaled: true} },
+      { new:true },
+    );
+    console.log('result', result);
+    return result
   }
 }
