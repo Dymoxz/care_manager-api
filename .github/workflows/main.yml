@@ -18,14 +18,16 @@ jobs:
         with:
           node-version: '18.x'
 
-      - name: npm run test
-        run: npm run test
 
       - name: npm install, build, and test
         run: |
           npm install
           npm run build
           # npm run test --if-present
+
+
+      - name: npm run test
+        run: npm run test
 
       - name: Create deployment directory
         run: |
