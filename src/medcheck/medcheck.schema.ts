@@ -4,7 +4,7 @@ import { HydratedDocument } from 'mongoose';
 export type MedCheckDocument = HydratedDocument<MedCheck>;
 
 
-@Schema()
+@Schema({ timestamps: true })
 export class MedCheck{
   @Prop({required: true })
   description: string;
