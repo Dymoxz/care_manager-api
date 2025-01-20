@@ -323,4 +323,21 @@ export class PatientService {
     return resultPatient;
   }
 
+
+  async switchQuarantineStatus(patientNumber: string): Promise<Patient> {
+    const patient = await this.patientModel
+      .findOne({ patientNumber: patientNumber })
+      .exec();
+
+    if (!patient) {
+      throw new NotFoundException(`Patient with patientNumber "${patientNumber}" not found`);
+    }
+
+    patient.isQuarantined = !patient.isQuarantined;
+    const updatedPatient = await patient.save();
+
+    console.log(`Quarantine status switched for patient ${patientNumber}`);
+    return updatedPatient;
+  }
+
 }

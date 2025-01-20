@@ -129,4 +129,11 @@ export class PatientController {
         return this.patientService.addAgreementToPatient(patientNumber, body);
       }
 
+      //switchQuarantineStatus
+      @Put('/quarantine/:patientNumber')
+      async switchQuarantineStatus(@Param('patientNumber') patientNumber: string): Promise<Patient> {
+          console.log('Switch quarantine status');
+          return this.patientService.switchQuarantineStatus(patientNumber);
+      }
+
 }
