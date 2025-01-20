@@ -123,4 +123,10 @@ export class PatientController {
         return this.patientService.createMedCheck(body, patientNumber);
       }
 
+
+      @Post("/agreement/:patientNumber")
+      async getMedChecks(@Param('patientNumber') patientNumber: string, @Body() body: {data: any}): Promise<any> {
+        return this.patientService.addAgreementToPatient(patientNumber, body);
+      }
+
 }

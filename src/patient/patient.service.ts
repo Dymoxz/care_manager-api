@@ -307,4 +307,20 @@ export class PatientService {
     return medCheck.save();
     }
 
+  async addAgreementToPatient(patientNumber: string, agreementData: any): Promise<Patient> {
+    const resultPatient = await this.patientModel.findOneAndUpdate(
+      { patientNumber: patientNumber },
+      { $push: { agreements: agreementData } },
+      { new: true },
+    )
+      .populate('agreements')
+      .exec();
+
+    if (!resultPatient) {
+      throw new NotFoundException(`Patient with patientNumber "${patientNumber}" not found`);
+    }
+    console.log(`Agreement added to patient ${patientNumber}:`, agreementData);
+    return resultPatient;
+  }
+
 }
