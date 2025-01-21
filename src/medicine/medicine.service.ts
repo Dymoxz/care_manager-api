@@ -10,7 +10,7 @@ export class MedicineService {
   ) {}
 
   async getAll(): Promise<Medicine[]> {
-    const result = await this.medicineModel.find().exec();
+    const result = await this.medicineModel.find().limit(20).exec();
     console.log('Get all medicines', result);
     return result;
   }
